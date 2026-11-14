@@ -21,7 +21,9 @@
         <label class="cut-search">Buscar corte
           <input id="cut-search" type="search" placeholder="Ej. entraña" autocomplete="off">
         </label>
-        <div id="ingredients" class="ingredient-palette" aria-label="Cortes disponibles"></div>
+        <div id="ingredients" class="ingredient-palette" aria-label="Cortes comunes"></div>
+        <button type="button" id="more-cuts" class="button" aria-expanded="false" aria-controls="extra-cuts">Mostrar más</button>
+        <div id="extra-cuts" class="ingredient-palette" aria-label="Más cortes" hidden></div>
         <p id="no-cuts" class="muted" hidden>No encontramos ese corte.</p>
         <section id="selected-pieces" class="drop-zone" aria-labelledby="selection-title">
           <h2 id="selection-title">Tus piezas</h2>

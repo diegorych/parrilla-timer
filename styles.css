@@ -77,13 +77,16 @@ dialog .muted { margin: 7px 0 14px; }
 .setup form { margin-top: 18px; }
 .cut-search { display: grid; gap: 5px; color: var(--muted); font-size: .8rem; }
 .cut-search input { width: 100%; min-height: 44px; padding: 8px 12px; font: inherit; font-size: 16px; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
-.ingredient-palette { display: grid; gap: 7px; margin-block: 10px; }
-.cut-group { border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
-.cut-group summary { min-height: 44px; padding: 12px; cursor: pointer; font-size: .87rem; font-weight: 700; }
-.cut-option { width: 100%; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 12px; border: 0; border-top: 1px solid var(--line); color: var(--text); background: transparent; font: inherit; font-size: .86rem; text-align: left; cursor: pointer; touch-action: manipulation; }
-.cut-option span { color: #f5a570; font-size: 1.2rem; }
-.cut-option[hidden] { display: none; }
+.ingredient-palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(105px, 100%), 1fr)); gap: 7px; align-items: start; margin-block: 10px; }
+.ingredient-palette[hidden], .cut-card[hidden], .cut-quantity[hidden] { display: none; }
+.cut-card { min-width: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+.cut-card:has(.cut-quantity:not([hidden])) { border-color: #a86742; }
+.cut-option { width: 100%; min-height: 68px; display: grid; justify-items: center; align-content: center; gap: 4px; padding: 7px 5px; border: 0; border-radius: 9px; color: var(--text); background: transparent; font: inherit; font-size: .76rem; text-align: center; cursor: pointer; touch-action: manipulation; }
+.cut-option span { font-size: 1.22rem; }
 .cut-option:active { background: #392c24; }
+.cut-quantity { display: grid; grid-template-columns: minmax(0, 1fr) 44px; align-items: center; gap: 4px; padding: 5px; border-top: 1px solid var(--line); color: var(--muted); font-size: .64rem; }
+.cut-quantity input { width: 100%; min-height: 36px; padding: 3px; font-size: 16px; color: var(--text); background: var(--bg); border: 1px solid #666; border-radius: 6px; }
+#more-cuts { margin-bottom: 10px; }
 #no-cuts { margin-bottom: 12px; }
 .drop-zone { padding: 12px; border: 1px dashed #666; border-radius: 14px; }
 .drop-zone.drag-over { border-color: var(--accent); background: #2c221b; }

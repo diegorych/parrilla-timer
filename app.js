@@ -337,64 +337,100 @@ let draft = [];
 let draggedType = null;
 
 function addPiece(type) {
+  if (draft.filter(piece => piece.type === type).length >= 99) return;
   draft.push(createPiece(type));
   renderDraft();
 }
 
-const cutGroups = [
-  ['Vacunos', [3, 13, 2, 6, 4, 5, 7, 12, 11, 8, 9, 14, 15, 10, 16]],
-  ['Cerdo y pollo', [17, 18, 19]],
-  ['Entradas y achuras', [0, 20, 24, 1, 21, 22, 23]],
-];
+const commonCuts = [3, 2, 0, 4, 5, 13, 20, 1, 19, 17];
+const remainingCuts = presets.map((_, type) => type).filter(type => !commonCuts.includes(type));
 const search = $('#cut-search');
+const more = $('#more-cuts');
+const extra = $('#extra-cuts');
 const normalize = value => value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim();
-const groups = cutGroups.map(([label, types]) => {
-  const group = document.createElement('details');
-  group.className = 'cut-group';
-  const summary = document.createElement('summary');
-  summary.textContent = label;
-  group.append(summary);
-  const buttons = types.map(type => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'cut-option';
-    button.draggable = true;
-    button.textContent = (emojis[type] ?? presets[type].emoji ?? '🥩') + ' ' + presets[type].name;
-    const plus = document.createElement('span');
-    plus.textContent = '+';
-    plus.setAttribute('aria-hidden', 'true');
-    button.append(plus);
-    button.setAttribute('aria-label', 'Agregar ' + presets[type].name);
-    button.addEventListener('click', () => addPiece(type));
-    button.addEventListener('dragstart', event => {
-      draggedType = type;
-      event.dataTransfer.setData('text/plain', presets[type].name);
-      event.dataTransfer.effectAllowed = 'copy';
-    });
-    button.addEventListener('dragend', () => {
-      draggedType = null;
-      dropZone.classList.remove('drag-over');
-    });
-    group.append(button);
-    return { button, name: normalize(presets[type].name) };
-  });
-  $('#ingredients').append(group);
-  return { group, buttons };
-});
+const catalog = new Map();
+let expanded = false;
 
-let wasSearching = false;
-let expandedGroups = [];
-search.addEventListener('input', () => {
+function createCutCard(type, container) {
+  const preset = presets[type];
+  const card = document.createElement('div');
+  card.className = 'cut-card';
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'cut-option';
+  button.draggable = true;
+  button.setAttribute('aria-label', 'Agregar ' + preset.name);
+  const icon = document.createElement('span');
+  icon.textContent = emojis[type] ?? preset.emoji ?? '🥩';
+  icon.setAttribute('aria-hidden', 'true');
+  button.append(icon, preset.name);
+  button.addEventListener('click', () => addPiece(type));
+  button.addEventListener('dragstart', event => {
+    draggedType = type;
+    event.dataTransfer.setData('text/plain', preset.name);
+    event.dataTransfer.effectAllowed = 'copy';
+  });
+  button.addEventListener('dragend', () => {
+    draggedType = null;
+    dropZone.classList.remove('drag-over');
+  });
+
+  const label = document.createElement('label');
+  label.className = 'cut-quantity';
+  label.textContent = 'Cantidad';
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.inputMode = 'numeric';
+  input.min = '0';
+  input.max = '99';
+  input.setAttribute('aria-label', 'Cantidad de ' + preset.name);
+  input.addEventListener('keydown', event => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    input.blur();
+  });
+  input.addEventListener('change', () => {
+    const count = draft.filter(piece => piece.type === type).length;
+    const requested = input.valueAsNumber;
+    if (!Number.isInteger(requested) || requested < 0 || requested > 99) {
+      input.value = count;
+      return;
+    }
+    for (let index = count; index < requested; index++) draft.push(createPiece(type));
+    for (let index = count; index > requested; index--) {
+      draft.splice(draft.findLastIndex(piece => piece.type === type), 1);
+    }
+    renderDraft();
+    if (!requested) button.focus();
+  });
+  label.append(input);
+  card.append(button, label);
+  container.append(card);
+  catalog.set(type, { card, button, label, input, name: normalize(preset.name) });
+}
+
+commonCuts.forEach(type => createCutCard(type, $('#ingredients')));
+remainingCuts.forEach(type => createCutCard(type, extra));
+
+function filterCatalog() {
   const query = normalize(search.value);
-  if (query && !wasSearching) expandedGroups = groups.map(({ group }) => group.open);
-  for (const [index, { group, buttons }] of groups.entries()) {
-    buttons.forEach(({ button, name }) => { button.hidden = !name.includes(query); });
-    group.hidden = buttons.every(({ button }) => button.hidden);
-    if (query) group.open = !group.hidden;
-    else if (wasSearching) group.open = expandedGroups[index];
+  let found = false;
+  for (const { card, name } of catalog.values()) {
+    card.hidden = !name.includes(query);
+    found ||= !card.hidden;
   }
-  $('#no-cuts').hidden = groups.some(({ group }) => !group.hidden);
-  wasSearching = Boolean(query);
+  more.hidden = Boolean(query);
+  more.textContent = expanded ? 'Mostrar menos' : 'Mostrar más';
+  more.setAttribute('aria-expanded', String(expanded));
+  extra.hidden = query ? remainingCuts.every(type => catalog.get(type).card.hidden) : !expanded;
+  $('#no-cuts').hidden = found;
+}
+
+search.addEventListener('input', filterCatalog);
+more.addEventListener('click', () => {
+  expanded = !expanded;
+  filterCatalog();
 });
 
 dropZone.addEventListener('dragover', event => {
@@ -414,6 +450,14 @@ dropZone.addEventListener('drop', event => {
 });
 
 function renderDraft() {
+  const counts = new Map();
+  for (const piece of draft) counts.set(piece.type, (counts.get(piece.type) ?? 0) + 1);
+  for (const [type, { button, label, input }] of catalog) {
+    const count = counts.get(type) ?? 0;
+    label.hidden = count === 0;
+    input.value = count;
+    button.disabled = count >= 99;
+  }
   const labels = pieceLabels(draft);
   $('#empty-pieces').hidden = draft.length > 0;
   $('#build-plan').disabled = draft.length === 0;
