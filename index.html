@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#181818">
+  <meta name="description" content="Cronómetros y avisos de vuelta para tu asado.">
+  <title>Parrilla Timer</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <section id="setup" class="setup" aria-labelledby="setup-title">
+      <h1 id="setup-title" tabindex="-1">¿Qué ponés en la parrilla?</h1>
+      <p class="muted">Tocá o arrastrá un corte para agregarlo. Podés repetirlo.</p>
+      <form id="setup-form">
+        <div id="ingredients" class="ingredient-palette" aria-label="Cortes disponibles"></div>
+        <section id="selected-pieces" class="drop-zone" aria-labelledby="selection-title">
+          <h2 id="selection-title">Tus piezas</h2>
+          <p id="empty-pieces" class="muted">Arrastrá un corte acá o elegilo arriba.</p>
+          <div id="draft-list"></div>
+        </section>
+        <div class="actions setup-actions">
+          <button type="button" id="cancel-setup" class="button" hidden>Volver</button>
+          <button id="build-plan" class="button primary" disabled>Ver plan y cronómetros</button>
+        </div>
+      </form>
+    </section>
+    <div id="session" hidden>
+    <section aria-labelledby="cuts-title">
+      <div class="heading">
+        <div><h1 id="cuts-title" tabindex="-1">Tus piezas</h1><p class="muted">Tocá iniciar cuando pongas cada pieza.</p></div>
+        <span class="muted" id="progress"></span>
+      </div>
+      <div id="cuts" class="cards"></div>
+    </section>
+    <section class="master" aria-label="Reloj general">
+      <div><span class="muted">Reloj general</span><div class="master-time" id="master-time" role="timer">00:00</div></div>
+      <div class="actions">
+        <button id="master-reset" class="button icon" aria-label="Reiniciar reloj general">↺</button>
+        <button id="master-toggle" class="button primary">Iniciar reloj</button>
+      </div>
+    </section>
+    <details class="plan">
+      <summary>Orden de parrilla</summary>
+      <ol id="schedule"></ol>
+    </details>
+    <button id="edit-menu" class="button">Editar cortes</button>
+    <button id="sound" class="button" aria-pressed="false">Activar sonido</button>
+    <button id="finish-session" class="button">Terminar asado</button>
+    <footer>Los tiempos son orientativos. <a href="https://ask.fsis.usda.gov/article/What-is-a-safe-internal-temperature-for-cooking-meat-and-poultry">Guía de temperaturas</a>. Mantené la app visible para escuchar los avisos.</footer>
+    </div>
+  </main>
+  <div id="notice" class="notice" role="status"></div>
+  <dialog id="finish-dialog" aria-labelledby="finish-title">
+    <form method="dialog">
+      <h2 id="finish-title">¿Terminar el asado?</h2>
+      <p class="muted">Se reiniciarán los cronómetros y se vaciará la lista de piezas.</p>
+      <div class="actions">
+        <button class="button" value="cancel" autofocus>Cancelar</button>
+        <button class="button primary" value="finish">Terminar asado</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="settings">
+    <form id="settings-form">
+      <h2 id="settings-title">Ajustar tiempos</h2>
+      <label>Cocción (min) <input name="cook" type="number" inputmode="numeric" min="1" max="240" required></label>
+      <label>Intervalo de vuelta (min) <input name="flip" type="number" inputmode="numeric" min="0" max="240" required></label>
+      <p class="muted">Usá 0 para desactivar las vueltas.</p>
+      <div class="actions"><button type="button" id="cancel" class="button outline">Cancelar</button><button class="button primary">Guardar</button></div>
+    </form>
+  </dialog>
+  <template id="ingredient-template">
+    <div class="ingredient">
+      <strong class="ingredient-name"></strong>
+      <label>Grosor
+        <select><option value="thin">Fino</option><option value="medium">Medio</option><option value="thick">Grueso</option></select>
+      </label>
+      <button type="button" class="button icon">×</button>
+    </div>
+  </template>
+  <template id="cut-template">
+    <article class="card">
+      <div class="card-top"><span class="pill" data-phase></span><span data-state class="state"></span></div>
+      <div class="piece">
+        <div class="ring" data-bar role="progressbar" aria-label="Progreso de cocción" aria-valuenow="0"><span data-emoji aria-hidden="true"></span></div>
+        <div>
+          <h2 data-name></h2>
+          <p class="muted" data-detail></p>
+          <button class="digits time-button" data-edit aria-label="Ajustar tiempos" title="Ajustar tiempos"><span role="timer" data-left></span></button>
+        </div>
+      </div>
+      <div class="card-actions">
+        <div class="actions">
+          <button class="button" data-minus>−5 min</button>
+          <button class="button" data-plus>+5 min</button>
+        </div>
+        <div class="actions">
+          <button class="button outline icon" data-reset aria-label="Reiniciar cocción">↺</button>
+          <button class="button primary" data-toggle>Iniciar</button>
+        </div>
+      </div>
+      <div class="flip" data-box hidden>
+        <span data-flip role="timer"></span>
+        <button class="button outline" data-turn>Marcar vuelta</button>
+      </div>
+    </article>
+  </template>
+  <noscript>Activá JavaScript para usar los cronómetros.</noscript>
+</body>
+</html>
