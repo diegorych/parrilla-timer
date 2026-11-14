@@ -75,8 +75,16 @@ dialog .muted { margin: 7px 0 14px; }
 .setup { max-width: 620px; margin: 0 auto; padding-block: 24px; }
 .setup h1 { font-size: 1.55rem; margin-bottom: 6px; }
 .setup form { margin-top: 18px; }
-.ingredient-palette { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
-.ingredient-palette button { min-height: 44px; background: var(--card); cursor: grab; }
+.cut-search { display: grid; gap: 5px; color: var(--muted); font-size: .8rem; }
+.cut-search input { width: 100%; min-height: 44px; padding: 8px 12px; font: inherit; font-size: 16px; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+.ingredient-palette { display: grid; gap: 7px; margin-block: 10px; }
+.cut-group { border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+.cut-group summary { min-height: 44px; padding: 12px; cursor: pointer; font-size: .87rem; font-weight: 700; }
+.cut-option { width: 100%; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 12px; border: 0; border-top: 1px solid var(--line); color: var(--text); background: transparent; font: inherit; font-size: .86rem; text-align: left; cursor: pointer; touch-action: manipulation; }
+.cut-option span { color: #f5a570; font-size: 1.2rem; }
+.cut-option[hidden] { display: none; }
+.cut-option:active { background: #392c24; }
+#no-cuts { margin-bottom: 12px; }
 .drop-zone { padding: 12px; border: 1px dashed #666; border-radius: 14px; }
 .drop-zone.drag-over { border-color: var(--accent); background: #2c221b; }
 .drop-zone h2 { margin-bottom: 8px; }

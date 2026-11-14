@@ -18,7 +18,11 @@
       <h1 id="setup-title" tabindex="-1">¿Qué ponés en la parrilla?</h1>
       <p class="muted">Tocá o arrastrá un corte para agregarlo. Podés repetirlo.</p>
       <form id="setup-form">
+        <label class="cut-search">Buscar corte
+          <input id="cut-search" type="search" placeholder="Ej. entraña" autocomplete="off">
+        </label>
         <div id="ingredients" class="ingredient-palette" aria-label="Cortes disponibles"></div>
+        <p id="no-cuts" class="muted" hidden>No encontramos ese corte.</p>
         <section id="selected-pieces" class="drop-zone" aria-labelledby="selection-title">
           <h2 id="selection-title">Tus piezas</h2>
           <p id="empty-pieces" class="muted">Arrastrá un corte acá o elegilo arriba.</p>

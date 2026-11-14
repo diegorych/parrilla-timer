@@ -39,7 +39,7 @@ try {
 }
 const master = { ...freshClock(), ...saved?.master };
 const legacyOrder = [2, 3, 0, 1, 4, 5];
-const order = [...legacyOrder, ...presets.slice(6).map((_, index) => index + 6)];
+
 const emojis = ['🌭', '🧀', '🥩', '🍖', '🥓', '🔥'];
 const profiles = [
   null, null,
@@ -341,24 +341,61 @@ function addPiece(type) {
   renderDraft();
 }
 
-for (const type of order) {
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'button';
-  button.draggable = true;
-  button.textContent = (emojis[type] ?? presets[type].emoji ?? '🥩') + ' ' + presets[type].name + ' +';
-  button.addEventListener('click', () => addPiece(type));
-  button.addEventListener('dragstart', event => {
-    draggedType = type;
-    event.dataTransfer.setData('text/plain', presets[type].name);
-    event.dataTransfer.effectAllowed = 'copy';
+const cutGroups = [
+  ['Vacunos', [3, 13, 2, 6, 4, 5, 7, 12, 11, 8, 9, 14, 15, 10, 16]],
+  ['Cerdo y pollo', [17, 18, 19]],
+  ['Entradas y achuras', [0, 20, 24, 1, 21, 22, 23]],
+];
+const search = $('#cut-search');
+const normalize = value => value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim();
+const groups = cutGroups.map(([label, types]) => {
+  const group = document.createElement('details');
+  group.className = 'cut-group';
+  const summary = document.createElement('summary');
+  summary.textContent = label;
+  group.append(summary);
+  const buttons = types.map(type => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'cut-option';
+    button.draggable = true;
+    button.textContent = (emojis[type] ?? presets[type].emoji ?? '🥩') + ' ' + presets[type].name;
+    const plus = document.createElement('span');
+    plus.textContent = '+';
+    plus.setAttribute('aria-hidden', 'true');
+    button.append(plus);
+    button.setAttribute('aria-label', 'Agregar ' + presets[type].name);
+    button.addEventListener('click', () => addPiece(type));
+    button.addEventListener('dragstart', event => {
+      draggedType = type;
+      event.dataTransfer.setData('text/plain', presets[type].name);
+      event.dataTransfer.effectAllowed = 'copy';
+    });
+    button.addEventListener('dragend', () => {
+      draggedType = null;
+      dropZone.classList.remove('drag-over');
+    });
+    group.append(button);
+    return { button, name: normalize(presets[type].name) };
   });
-  button.addEventListener('dragend', () => {
-    draggedType = null;
-    dropZone.classList.remove('drag-over');
-  });
-  $('#ingredients').append(button);
-}
+  $('#ingredients').append(group);
+  return { group, buttons };
+});
+
+let wasSearching = false;
+let expandedGroups = [];
+search.addEventListener('input', () => {
+  const query = normalize(search.value);
+  if (query && !wasSearching) expandedGroups = groups.map(({ group }) => group.open);
+  for (const [index, { group, buttons }] of groups.entries()) {
+    buttons.forEach(({ button, name }) => { button.hidden = !name.includes(query); });
+    group.hidden = buttons.every(({ button }) => button.hidden);
+    if (query) group.open = !group.hidden;
+    else if (wasSearching) group.open = expandedGroups[index];
+  }
+  $('#no-cuts').hidden = groups.some(({ group }) => !group.hidden);
+  wasSearching = Boolean(query);
+});
 
 dropZone.addEventListener('dragover', event => {
   if (draggedType === null) return;
@@ -394,7 +431,7 @@ function renderDraft() {
       draft.splice(index, 1);
       renderDraft();
       const nextRemove = $('#draft-list').querySelectorAll('button')[index] ??
-        $('#draft-list').lastElementChild?.querySelector('button') ?? $('#ingredients button');
+        $('#draft-list').lastElementChild?.querySelector('button') ?? search;
       nextRemove.focus();
     });
     return row;
