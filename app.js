@@ -1,29 +1,29 @@
 const presets = [
-  { name: 'Chorizos', cook: 30, flip: 7, phase: 'Entrada', detail: 'Fuego medio · girar regularmente' },
-  { name: 'Provolone', cook: 10, flip: 0, phase: 'Entrada', detail: 'En provoletera · sin girar el queso' },
-  { name: 'Colita de cuadril', cook: 55, flip: 15, phase: 'Carne', detail: 'Pieza entera · fuego medio-bajo' },
-  { name: 'Tira de asado', cook: 45, flip: 30, phase: 'Carne', detail: 'Grosor medio · primero del lado del hueso' },
-  { name: 'Bife de vacío', cook: 20, flip: 10, phase: 'Carne', detail: 'Fuego medio-alto · ajustá según el grosor' },
-  { name: 'Entraña', cook: 8, flip: 4, phase: 'Carne', detail: 'Fuego fuerte · una vuelta a mitad' },
-  { name: 'Vacío entero', cook: 65, flip: 25, detail: 'Fuego medio-bajo', sizes: [50, 85], rest: 10 },
-  { name: 'Matambre', cook: 30, flip: 15, detail: 'Fuego medio', sizes: [20, 45] },
-  { name: 'Bife de chorizo', cook: 16, flip: 8, detail: 'Fuego medio-alto', sizes: [10, 24] },
-  { name: 'Ojo de bife', cook: 16, flip: 8, detail: 'Fuego medio-alto', sizes: [10, 24] },
-  { name: 'Lomo', cook: 18, flip: 8, detail: 'En medallones · fuego medio-alto', sizes: [12, 26] },
-  { name: 'Picaña', cook: 45, flip: 15, detail: 'Pieza entera · fuego medio-bajo', sizes: [35, 60], rest: 8 },
-  { name: 'Tapa de asado', cook: 55, flip: 20, detail: 'Fuego medio-bajo', sizes: [40, 70], rest: 10 },
-  { name: 'Costillar', cook: 120, flip: 60, detail: 'Fuego bajo · empezá del lado del hueso', sizes: [90, 165], rest: 10 },
-  { name: 'Bife angosto', cook: 15, flip: 7, detail: 'Fuego medio-alto', sizes: [10, 22] },
-  { name: 'Bife ancho', cook: 18, flip: 9, detail: 'Fuego medio-alto', sizes: [12, 26] },
-  { name: 'Cuadril', cook: 18, flip: 8, detail: 'En bifes · fuego medio-alto', sizes: [12, 26] },
-  { name: 'Bondiola de cerdo', cook: 24, flip: 10, detail: 'En bifes · fuego medio', sizes: [16, 35], emoji: '🥓' },
-  { name: 'Pechito de cerdo', cook: 60, flip: 25, detail: 'Fuego medio-bajo', sizes: [45, 80], rest: 5, emoji: '🍖' },
-  { name: 'Pollo', cook: 45, flip: 20, detail: 'En presas · fuego medio', sizes: [30, 60], emoji: '🍗' },
-  { name: 'Morcilla', cook: 12, flip: 6, phase: 'Entrada', detail: 'Ya cocida · calentar a fuego suave', emoji: '🌭' },
-  { name: 'Mollejas', cook: 35, flip: 12, phase: 'Entrada', detail: 'Fuego medio · dorar por ambos lados', sizes: [25, 45] },
-  { name: 'Chinchulines', cook: 50, flip: 15, phase: 'Entrada', detail: 'Fuego medio-bajo', sizes: [40, 60] },
-  { name: 'Riñones', cook: 18, flip: 8, phase: 'Entrada', detail: 'En mitades · fuego medio', sizes: [12, 25] },
-  { name: 'Chistorra', cook: 14, flip: 5, phase: 'Entrada', detail: 'Fuego medio · girar regularmente', emoji: '🌭' },
+  { name: 'Chorizos', cook: 30, flip: 7, phase: 'Entrada', heat: 'medio' },
+  { name: 'Provolone', cook: 10, flip: 0, phase: 'Entrada', heat: 'medio' },
+  { name: 'Colita de cuadril', cook: 55, flip: 15, phase: 'Carne', heat: 'bajo' },
+  { name: 'Tira de asado', cook: 45, flip: 30, phase: 'Carne', heat: 'bajo' },
+  { name: 'Bife de vacío', cook: 20, flip: 10, phase: 'Carne', heat: 'alto' },
+  { name: 'Entraña', cook: 8, flip: 4, phase: 'Carne', heat: 'alto' },
+  { name: 'Vacío entero', cook: 65, flip: 25, heat: 'bajo', sizes: [50, 85], rest: 10 },
+  { name: 'Matambre', cook: 30, flip: 15, heat: 'medio', sizes: [20, 45] },
+  { name: 'Bife de chorizo', cook: 16, flip: 8, heat: 'alto', sizes: [10, 24] },
+  { name: 'Ojo de bife', cook: 16, flip: 8, heat: 'alto', sizes: [10, 24] },
+  { name: 'Lomo', cook: 18, flip: 8, heat: 'alto', sizes: [12, 26] },
+  { name: 'Picaña', cook: 45, flip: 15, heat: 'bajo', sizes: [35, 60], rest: 8 },
+  { name: 'Tapa de asado', cook: 55, flip: 20, heat: 'bajo', sizes: [40, 70], rest: 10 },
+  { name: 'Costillar', cook: 120, flip: 60, heat: 'bajo', sizes: [90, 165], rest: 10 },
+  { name: 'Bife angosto', cook: 15, flip: 7, heat: 'alto', sizes: [10, 22] },
+  { name: 'Bife ancho', cook: 18, flip: 9, heat: 'alto', sizes: [12, 26] },
+  { name: 'Cuadril', cook: 18, flip: 8, heat: 'alto', sizes: [12, 26] },
+  { name: 'Bondiola de cerdo', cook: 24, flip: 10, heat: 'medio', sizes: [16, 35], emoji: '🥓' },
+  { name: 'Pechito de cerdo', cook: 60, flip: 25, heat: 'bajo', sizes: [45, 80], rest: 5, emoji: '🍖' },
+  { name: 'Pollo', cook: 45, flip: 20, heat: 'medio', sizes: [30, 60], emoji: '🍗' },
+  { name: 'Morcilla', cook: 12, flip: 6, phase: 'Entrada', heat: 'bajo', emoji: '🌭' },
+  { name: 'Mollejas', cook: 35, flip: 12, phase: 'Entrada', heat: 'medio', sizes: [25, 45] },
+  { name: 'Chinchulines', cook: 50, flip: 15, phase: 'Entrada', heat: 'bajo', sizes: [40, 60] },
+  { name: 'Riñones', cook: 18, flip: 8, phase: 'Entrada', heat: 'medio', sizes: [12, 25] },
+  { name: 'Chistorra', cook: 14, flip: 5, phase: 'Entrada', heat: 'medio', emoji: '🌭' },
 ];
 
 const key = 'parrilla-timer-v1';
@@ -49,6 +49,13 @@ const profiles = [
   { thin: 6, thick: 10 },
   ...presets.slice(6).map(preset => preset.sizes ? { thin: preset.sizes[0], thick: preset.sizes[1] } : null),
 ];
+function setHeatBadge(badge, type) {
+  const heat = presets[type].heat;
+  badge.className = 'heat-badge';
+  badge.dataset.heat = heat;
+  badge.textContent = 'Fuego ' + heat;
+}
+
 function createPiece(type, profile = 'medium', id = crypto.randomUUID()) {
   return {
     ...presets[type], phase: presets[type].phase ?? 'Carne', ...freshCut(), id, type, profile,
@@ -206,13 +213,13 @@ function createView(cut) {
   const index = cut.type;
   const card = $('#cut-template').content.firstElementChild.cloneNode(true);
   const fields = Object.fromEntries(
-    ['phase', 'state', 'name', 'detail', 'emoji', 'left', 'box', 'flip', 'bar', 'toggle', 'reset', 'edit', 'minus', 'plus', 'turn']
+    ['phase', 'state', 'name', 'heat', 'emoji', 'left', 'box', 'flip', 'bar', 'toggle', 'reset', 'edit', 'minus', 'plus', 'turn']
       .map(field => [field, $("[data-" + field + "]", card)]),
   );
   fields.phase.textContent = cut.phase;
   fields.phase.dataset.phase = cut.phase;
   fields.name.textContent = cut.name;
-  fields.detail.textContent = cut.detail;
+  setHeatBadge(fields.heat, index);
   fields.emoji.textContent = (emojis[index] ?? presets[index].emoji ?? '🥩');
   fields.left.setAttribute('aria-label', 'Cocción restante');
   fields.flip.setAttribute('aria-label', 'Próxima vuelta');
@@ -362,9 +369,12 @@ function createCutCard(type, container) {
   button.draggable = true;
   button.setAttribute('aria-label', 'Agregar ' + preset.name);
   const icon = document.createElement('span');
+  icon.className = 'cut-icon';
   icon.textContent = emojis[type] ?? preset.emoji ?? '🥩';
   icon.setAttribute('aria-hidden', 'true');
-  button.append(icon, preset.name);
+  const badge = document.createElement('span');
+  setHeatBadge(badge, type);
+  button.append(icon, preset.name, badge);
   button.addEventListener('click', () => addPiece(type));
   button.addEventListener('dragstart', event => {
     draggedType = type;

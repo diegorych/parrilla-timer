@@ -82,7 +82,7 @@ dialog .muted { margin: 7px 0 14px; }
 .cut-card { min-width: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
 .cut-card:has(.cut-quantity:not([hidden])) { border-color: #a86742; }
 .cut-option { width: 100%; min-height: 68px; display: grid; justify-items: center; align-content: center; gap: 4px; padding: 7px 5px; border: 0; border-radius: 9px; color: var(--text); background: transparent; font: inherit; font-size: .76rem; text-align: center; cursor: pointer; touch-action: manipulation; }
-.cut-option span { font-size: 1.22rem; }
+.cut-icon { font-size: 1.22rem; }
 .cut-option:active { background: #392c24; }
 .cut-quantity { display: grid; grid-template-columns: minmax(0, 1fr) 44px; align-items: center; gap: 4px; padding: 5px; border-top: 1px solid var(--line); color: var(--muted); font-size: .64rem; }
 .cut-quantity input { width: 100%; min-height: 36px; padding: 3px; font-size: 16px; color: var(--text); background: var(--bg); border: 1px solid #666; border-radius: 6px; }
@@ -100,3 +100,9 @@ dialog .muted { margin: 7px 0 14px; }
 .setup-actions .button { min-height: 44px; }
 
 #finish-session { display: block; min-height: 44px; margin-top: 12px; }
+
+.heat-badge { display: inline-block; width: fit-content; padding: 3px 7px; border-radius: 999px; font-size: .67rem; font-weight: 700; line-height: 1.2; white-space: nowrap; }
+.piece .heat-badge { margin-top: 5px; }
+.heat-badge[data-heat="bajo"] { color: #b7d6ff; background: #263a54; }
+.heat-badge[data-heat="medio"] { color: #ffdb9c; background: #49371e; }
+.heat-badge[data-heat="alto"] { color: #ffc2ae; background: #542d24; }
