@@ -14,8 +14,8 @@ Abrí [http://localhost:8000](http://localhost:8000). Usá localhost o HTTPS par
 
 ## Cómo usarla
 
-1. Tocá o arrastrá cada corte para agregarlo. Podés repetir cualquier corte y elegir el grosor de cada pieza. Tocá **Ver plan y cronómetros**.
-2. Tocá **Activar sonido** para probar el aviso y habilitar el audio. Repetilo si recargás la página.
+1. Tocá o arrastrá cada corte para agregarlo. Podés repetir cualquier corte y elegir el grosor de cada pieza. Tocá **Empezar asado**.
+2. El audio se habilita al empezar el asado o interactuar con sus controles, según el navegador.
 3. Iniciá el **Reloj general** al poner la primera pieza. Consultá **Orden de parrilla** para ver cuándo poner y servir cada tanda. El reloj general funciona de forma independiente.
 4. Iniciá el cronómetro de cada pieza cuando la pongas. Podés pausarlo, reanudarlo, reiniciarlo y ajustar la duración con **−5 min** y **+5 min**. Tocá el tiempo restante para editar la duración exacta y el intervalo de vuelta. Un intervalo de 0 desactiva los avisos de vuelta.
 5. Cuando gires una pieza, tocá **Marcar vuelta** para iniciar un intervalo nuevo desde ese momento. Al agotarse la cocción, revisá el punto. Si agregás minutos después del aviso, podés reanudar desde el tiempo acumulado.
@@ -25,7 +25,7 @@ Los cronómetros y los ajustes se guardan en el navegador. Usá una ventana dura
 
 Para empezar otro asado, tocá **Terminar asado** y confirmá. La app reinicia los relojes y vuelve a la selección de cortes.
 
-## Tiempos de partida
+## Tiempos de partida de los cortes originales
 
 | Pieza | Cocción | Vuelta | Poner en parrilla |
 | --- | ---: | ---: | ---: |

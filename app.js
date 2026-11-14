@@ -5,6 +5,25 @@ const presets = [
   { name: 'Tira de asado', cook: 45, flip: 30, phase: 'Carne', detail: 'Grosor medio · primero del lado del hueso' },
   { name: 'Bife de vacío', cook: 20, flip: 10, phase: 'Carne', detail: 'Fuego medio-alto · ajustá según el grosor' },
   { name: 'Entraña', cook: 8, flip: 4, phase: 'Carne', detail: 'Fuego fuerte · una vuelta a mitad' },
+  { name: 'Vacío entero', cook: 65, flip: 25, detail: 'Fuego medio-bajo', sizes: [50, 85], rest: 10 },
+  { name: 'Matambre', cook: 30, flip: 15, detail: 'Fuego medio', sizes: [20, 45] },
+  { name: 'Bife de chorizo', cook: 16, flip: 8, detail: 'Fuego medio-alto', sizes: [10, 24] },
+  { name: 'Ojo de bife', cook: 16, flip: 8, detail: 'Fuego medio-alto', sizes: [10, 24] },
+  { name: 'Lomo', cook: 18, flip: 8, detail: 'En medallones · fuego medio-alto', sizes: [12, 26] },
+  { name: 'Picaña', cook: 45, flip: 15, detail: 'Pieza entera · fuego medio-bajo', sizes: [35, 60], rest: 8 },
+  { name: 'Tapa de asado', cook: 55, flip: 20, detail: 'Fuego medio-bajo', sizes: [40, 70], rest: 10 },
+  { name: 'Costillar', cook: 120, flip: 60, detail: 'Fuego bajo · empezá del lado del hueso', sizes: [90, 165], rest: 10 },
+  { name: 'Bife angosto', cook: 15, flip: 7, detail: 'Fuego medio-alto', sizes: [10, 22] },
+  { name: 'Bife ancho', cook: 18, flip: 9, detail: 'Fuego medio-alto', sizes: [12, 26] },
+  { name: 'Cuadril', cook: 18, flip: 8, detail: 'En bifes · fuego medio-alto', sizes: [12, 26] },
+  { name: 'Bondiola de cerdo', cook: 24, flip: 10, detail: 'En bifes · fuego medio', sizes: [16, 35], emoji: '🥓' },
+  { name: 'Pechito de cerdo', cook: 60, flip: 25, detail: 'Fuego medio-bajo', sizes: [45, 80], rest: 5, emoji: '🍖' },
+  { name: 'Pollo', cook: 45, flip: 20, detail: 'En presas · fuego medio', sizes: [30, 60], emoji: '🍗' },
+  { name: 'Morcilla', cook: 12, flip: 6, phase: 'Entrada', detail: 'Ya cocida · calentar a fuego suave', emoji: '🌭' },
+  { name: 'Mollejas', cook: 35, flip: 12, phase: 'Entrada', detail: 'Fuego medio · dorar por ambos lados', sizes: [25, 45] },
+  { name: 'Chinchulines', cook: 50, flip: 15, phase: 'Entrada', detail: 'Fuego medio-bajo', sizes: [40, 60] },
+  { name: 'Riñones', cook: 18, flip: 8, phase: 'Entrada', detail: 'En mitades · fuego medio', sizes: [12, 25] },
+  { name: 'Chistorra', cook: 14, flip: 5, phase: 'Entrada', detail: 'Fuego medio · girar regularmente', emoji: '🌭' },
 ];
 
 const key = 'parrilla-timer-v1';
@@ -19,7 +38,8 @@ try {
   // The app also runs when storage is unavailable.
 }
 const master = { ...freshClock(), ...saved?.master };
-const order = [2, 3, 0, 1, 4, 5];
+const legacyOrder = [2, 3, 0, 1, 4, 5];
+const order = [...legacyOrder, ...presets.slice(6).map((_, index) => index + 6)];
 const emojis = ['🌭', '🧀', '🥩', '🍖', '🥓', '🔥'];
 const profiles = [
   null, null,
@@ -27,16 +47,17 @@ const profiles = [
   { thin: 35, thick: 50 },
   { thin: 15, thick: 25 },
   { thin: 6, thick: 10 },
+  ...presets.slice(6).map(preset => preset.sizes ? { thin: preset.sizes[0], thick: preset.sizes[1] } : null),
 ];
 function createPiece(type, profile = 'medium', id = crypto.randomUUID()) {
   return {
-    ...presets[type], ...freshCut(), id, type, profile,
+    ...presets[type], phase: presets[type].phase ?? 'Carne', ...freshCut(), id, type, profile,
     cook: profiles[type]?.[profile] ?? presets[type].cook,
   };
 }
 
 const legacyActive = saved?.cuts?.some(cut => cut.since !== null || cut.elapsed || cut.done);
-let pieces = saved?.pieces ?? order.flatMap(type => {
+let pieces = saved?.pieces ?? legacyOrder.flatMap(type => {
   if (!(saved?.menu ? saved.menu[type]?.selected : legacyActive)) return [];
   const { name, ...clock } = saved.cuts[type];
   return [{ ...createPiece(type, saved.menu?.[type]?.profile), ...clock, name: presets[type].name }];
@@ -81,7 +102,7 @@ function toggle(clock, now) {
 
 let audio;
 let sound = false;
-const soundButton = $('#sound');
+
 
 function play(kind) {
   if (!sound || audio?.state !== 'running') return;
@@ -107,41 +128,36 @@ function notify(messages) {
   noticeTimeout = setTimeout(() => { $('#notice').textContent = ''; }, 8500);
 }
 
-soundButton.addEventListener('click', async () => {
-  soundButton.disabled = true;
+async function enableAudio() {
+  if (audio?.state === 'running') return;
   try {
-    if (sound) {
-      sound = false;
-    } else {
-      const Context = window.AudioContext || window.webkitAudioContext;
-      audio ??= new Context();
-      await audio.resume();
-      sound = true;
-      play('flip');
-    }
+    const Context = window.AudioContext || window.webkitAudioContext;
+    audio ??= new Context();
+    await audio.resume();
+    sound = true;
   } catch {
-    notify(['El navegador no pudo activar el sonido']);
-  } finally {
-    soundButton.textContent = sound ? 'Silenciar' : 'Activar sonido';
-    soundButton.setAttribute('aria-pressed', String(sound));
-    soundButton.disabled = false;
+    // Visual timer alerts still work without audio.
   }
-});
+}
+
+$('#session').addEventListener('click', enableAudio);
 
 const schedule = $('#schedule');
 function renderSchedule() {
-  const sides = pieces.filter(piece => piece.type < 2);
-  const meats = pieces.filter(piece => piece.type >= 2);
+  const isStarter = piece => presets[piece.type].phase === 'Entrada';
+  const sides = pieces.filter(isStarter);
+  const meats = pieces.filter(piece => !isStarter(piece));
   const rest = [0, 0, 10, 10, 0, 4];
-  const span = piece => piece.cook + rest[piece.type];
+  const span = piece => piece.cook + (rest[piece.type] ?? presets[piece.type].rest ?? 0);
   const longest = group => Math.max(0, ...group.map(span));
-  const gap = sides.length && meats.length ? Math.max(20, longest(meats.filter(piece => piece.type >= 4))) : 0;
+  const gap = sides.length && meats.length ? Math.max(20, longest(meats.filter(piece => span(piece) <= 30))) : 0;
   const main = Math.max(longest(meats), longest(sides) + gap);
   const starter = main - gap;
-  const rows = pieces.map(piece => [
-    (piece.type < 2 ? starter : main) - span(piece),
-    'Poné ' + piece.name,
-  ]);
+  const ordered = [...pieces].sort((a, b) => startAt(a) - startAt(b));
+  function startAt(piece) {
+    return (isStarter(piece) ? starter : main) - span(piece);
+  }
+  const rows = ordered.map(piece => [startAt(piece), 'Poné ' + piece.name]);
   if (sides.length) rows.push([starter, 'Serví las entradas', true]);
   if (meats.length) rows.push([main, 'Serví los cortes', true]);
   rows.sort((a, b) => a[0] - b[0] || Number(Boolean(b[2])) - Number(Boolean(a[2])));
@@ -155,6 +171,12 @@ function renderSchedule() {
     row.append(mark, label);
     return row;
   }));
+  const cards = new Map(views.map(view => [view.cut, view.card]));
+  const container = $('#cuts');
+  ordered.forEach((piece, index) => {
+    const card = cards.get(piece);
+    if (card && container.children[index] !== card) container.insertBefore(card, container.children[index] ?? null);
+  });
 }
 
 const dialog = $('#settings');
@@ -191,7 +213,7 @@ function createView(cut) {
   fields.phase.dataset.phase = cut.phase;
   fields.name.textContent = cut.name;
   fields.detail.textContent = cut.detail;
-  fields.emoji.textContent = emojis[index];
+  fields.emoji.textContent = (emojis[index] ?? presets[index].emoji ?? '🥩');
   fields.left.setAttribute('aria-label', 'Cocción restante');
   fields.flip.setAttribute('aria-label', 'Próxima vuelta');
 
@@ -324,7 +346,7 @@ for (const type of order) {
   button.type = 'button';
   button.className = 'button';
   button.draggable = true;
-  button.textContent = emojis[type] + ' ' + presets[type].name + ' +';
+  button.textContent = (emojis[type] ?? presets[type].emoji ?? '🥩') + ' ' + presets[type].name + ' +';
   button.addEventListener('click', () => addPiece(type));
   button.addEventListener('dragstart', event => {
     draggedType = type;
@@ -360,7 +382,7 @@ function renderDraft() {
   $('#build-plan').disabled = draft.length === 0;
   $('#draft-list').replaceChildren(...draft.map((piece, index) => {
     const row = $('#ingredient-template').content.firstElementChild.cloneNode(true);
-    $('.ingredient-name', row).textContent = emojis[piece.type] + ' ' + labels[index];
+    $('.ingredient-name', row).textContent = (emojis[piece.type] ?? presets[piece.type].emoji ?? '🥩') + ' ' + labels[index];
     const select = $('select', row);
     select.parentElement.hidden = !profiles[piece.type];
     select.value = piece.profile;
@@ -384,6 +406,7 @@ function openSetup(focus = false) {
   session.hidden = true;
   setup.hidden = false;
   $('#cancel-setup').hidden = !pieces.length;
+  $('#build-plan').textContent = pieces.length ? 'Guardar cambios' : 'Empezar asado';
   renderDraft();
   if (focus) $('#setup-title').focus();
 }
@@ -423,6 +446,8 @@ $('#cancel-setup').addEventListener('click', () => showSession(true));
 setupForm.addEventListener('submit', event => {
   event.preventDefault();
   if (!draft.length) return;
+  void enableAudio();
+  if (!pieces.length) $('.plan').open = false;
   const previous = new Map(pieces.map(piece => [piece.id, piece]));
   const now = Date.now();
   pieces = draft.map(({ id, type, profile }) => {

@@ -87,3 +87,5 @@ dialog .muted { margin: 7px 0 14px; }
 .ingredient button { min-width: 44px; min-height: 44px; grid-column: 3; }
 .setup-actions { justify-content: flex-end; margin-top: 14px; }
 .setup-actions .button { min-height: 44px; }
+
+#finish-session { display: block; min-height: 44px; margin-top: 12px; }

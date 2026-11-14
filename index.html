@@ -26,21 +26,15 @@
         </section>
         <div class="actions setup-actions">
           <button type="button" id="cancel-setup" class="button" hidden>Volver</button>
-          <button id="build-plan" class="button primary" disabled>Ver plan y cronómetros</button>
+          <button id="build-plan" class="button primary" disabled>Empezar asado</button>
         </div>
       </form>
     </section>
     <div id="session" hidden>
-    <section aria-labelledby="cuts-title">
-      <div class="heading">
-        <div><h1 id="cuts-title" tabindex="-1">Tus piezas</h1><p class="muted">Tocá iniciar cuando pongas cada pieza.</p></div>
-        <span class="muted" id="progress"></span>
-      </div>
-      <div id="cuts" class="cards"></div>
-    </section>
     <section class="master" aria-label="Reloj general">
       <div><span class="muted">Reloj general</span><div class="master-time" id="master-time" role="timer">00:00</div></div>
       <div class="actions">
+        <button id="edit-menu" class="button icon" aria-label="Editar cortes" title="Editar cortes">✎</button>
         <button id="master-reset" class="button icon" aria-label="Reiniciar reloj general">↺</button>
         <button id="master-toggle" class="button primary">Iniciar reloj</button>
       </div>
@@ -49,10 +43,15 @@
       <summary>Orden de parrilla</summary>
       <ol id="schedule"></ol>
     </details>
-    <button id="edit-menu" class="button">Editar cortes</button>
-    <button id="sound" class="button" aria-pressed="false">Activar sonido</button>
-    <button id="finish-session" class="button">Terminar asado</button>
+    <section aria-labelledby="cuts-title">
+      <div class="heading">
+        <div><h1 id="cuts-title" tabindex="-1">Tus piezas</h1><p class="muted">Tocá iniciar cuando pongas cada pieza.</p></div>
+        <span class="muted" id="progress"></span>
+      </div>
+      <div id="cuts" class="cards"></div>
+    </section>
     <footer>Los tiempos son orientativos. <a href="https://ask.fsis.usda.gov/article/What-is-a-safe-internal-temperature-for-cooking-meat-and-poultry">Guía de temperaturas</a>. Mantené la app visible para escuchar los avisos.</footer>
+    <button id="finish-session" class="button">Terminar asado</button>
     </div>
   </main>
   <div id="notice" class="notice" role="status"></div>
